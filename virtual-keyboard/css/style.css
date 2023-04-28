@@ -1,0 +1,32 @@
+.area {
+  width: 90%;
+  margin: 0 auto;
+  border: 1px solid black;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+}
+textarea {
+  width: 100%;
+}
+.board {
+  width: 650px;
+  height: 200px;
+  border: 1px solid gray;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.board > div {
+  width: 30px;
+  height: 30px;
+  border: 1px solid black;
+  text-align: center;
+}
+.board .long {
+  width: 80px;
+}
+.board .logest {
+  width: 290px;
+}
