@@ -1,16 +1,10 @@
-const arr = [];
-// let capsL = false;
-// let langI = false;
-console.log(localStorage.getItem("capsL"));
+let capsL, langI;
 !localStorage.getItem("capsL")
   ? (capsL = false)
   : (capsL = localStorage.getItem("capsL"));
 !localStorage.getItem("langI")
   ? (langI = false)
   : (langI = localStorage.getItem("langI"));
-console.log(localStorage);
-console.log("capsL", capsL);
-console.log("langI", langI);
 
 const body = document.querySelector("body");
 const div = document.createElement("div");
@@ -18,6 +12,7 @@ div.classList.add("area");
 const h = document.createElement("h1");
 h.textContent = "Virtual Keyboard";
 const txtarea = document.createElement("textarea");
+txtarea.setAttribute("autofocus", true);
 const board = document.createElement("div");
 board.classList.add("board");
 const p = document.createElement("p");
@@ -128,8 +123,6 @@ const array = [
 let txt = "";
 
 for (let i = 0; i < array.length; i++) {
-  // let d = document.createElement("div");
-
   let forBuilding = 0;
   if (langI == "false" && capsL == "false") {
     forBuilding = 0;
@@ -140,8 +133,7 @@ for (let i = 0; i < array.length; i++) {
   } else if (langI == "true" && capsL == "true") {
     forBuilding = 3;
   }
-  console.log("forBuilding", forBuilding);
-  console.log(langI + " " + capsL);
+
   // eslint-disable-next-line quotes
   if (forBuilding === 0 || forBuilding == 2) {
     txt += `<div data-item="${array[i].name}" class="${array[i].class}">${array[i].value[forBuilding]}</div>`;
@@ -254,14 +246,11 @@ document.addEventListener("keyup", (e) => {
       }
     }
   }
-  console.log(e.code);
-  // showTxt(e.code);
-  // txtarea.value += e.key;
 });
 console.log(board.childNodes);
 
-function capsLock() {
-  count = 1;
+function capsLock(count = 1) {
+  // count = 1;
   capsL ? (count = 1) : (count = 0);
   localStorage.setItem("capsL", capsL);
   if (langI) {
@@ -276,14 +265,13 @@ function capsLock() {
 }
 
 function shift(count) {
-  console.log("this is shift");
   for (let i = 0; i < 53; i++) {
     board.childNodes[i].textContent = array[i].value[count];
   }
 }
 
-function language() {
-  count = 0;
+function language(count = 0) {
+  // count = 0;
   langI ? (count = 2) : (count = 0);
   localStorage.setItem("langI", langI);
   for (let i = 0; i < 53; i++) {
@@ -292,13 +280,4 @@ function language() {
     }
     board.childNodes[i].textContent = array[i].value[count];
   }
-}
-
-// для печатания
-function showTxt(button) {
-  // board.childNodes[i]
-  // for (let i = 0; i < array.length; i++) {
-  //   if (button == array[i]) {
-  //   }
-  // }
 }
