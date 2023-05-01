@@ -19,6 +19,7 @@ textarea {
   border-radius: 5px;
   background-color: #888888;
   color: #ffffff;
+  box-shadow: 4px 4px 8px 0px rgba(34, 60, 80, 0.2);
 }
 .board > div {
   width: 30px;

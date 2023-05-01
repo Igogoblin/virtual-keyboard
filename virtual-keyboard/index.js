@@ -8,7 +8,7 @@ console.log(localStorage.getItem("capsL"));
 !localStorage.getItem("langI")
   ? (langI = false)
   : (langI = localStorage.getItem("langI"));
-
+console.log(localStorage);
 console.log("capsL", capsL);
 console.log("langI", langI);
 
@@ -29,7 +29,7 @@ div.append(board);
 div.append(p);
 // eslint-disable-next-line quotes
 p.innerHTML = `<p>Клавиатура создана в операционной системе Windows<p><p>Для переключения языка комбинации: левые cltr + alt</p>`;
-
+txtarea.value = localStorage.getItem("txtArea");
 const array = [
   { name: "Backquote", value: ["`", "~", "ё", "Ё"], class: [""] },
   { name: "Digit1", value: [1, "!", "1", "!"], class: [""] },
@@ -49,7 +49,7 @@ const array = [
     value: ["Backspace", "Backspace", "Backspace", "Backspace"],
     class: ["dark long"],
   },
-  { name: "Tab", value: ["Tab", "Tab", "", ""], class: ["dark"] },
+  { name: "Tab", value: ["Tab", "Tab", "Tab", "Tab"], class: ["dark"] },
   { name: "KeyQ", value: ["q", "Q", "й", "Й"], class: [""] },
   { name: "KeyW", value: ["w", "W", "ц", "Ц"], class: [""] },
   { name: "KeyE", value: ["e", "E", "у", "У"], class: [""] },
@@ -130,30 +130,52 @@ let txt = "";
 for (let i = 0; i < array.length; i++) {
   // let d = document.createElement("div");
 
-  // let forBuilding = 0;
-  // if (langI == false && capsL == false) {
-  //   forBuilding = 0;
-  // } else if (langI == true && capsL == false) {
-  //   console.log("daaaaaaa");
-  //   forBuilding = 2;
-  // } else if (langI == false && capsL == true) {
-  //   forBuilding = 1;
-  // } else if (langI == true && capsL == true) {
-  //   forBuilding = 3;
-  // }
-  // console.log("forBuilding", forBuilding);
-  // console.log(langI + " " + capsL);
-
+  let forBuilding = 0;
+  if (langI == "false" && capsL == "false") {
+    forBuilding = 0;
+  } else if (langI == "true" && capsL == "false") {
+    forBuilding = 2;
+  } else if (langI == "false" && capsL == "true") {
+    forBuilding = 1;
+  } else if (langI == "true" && capsL == "true") {
+    forBuilding = 3;
+  }
+  console.log("forBuilding", forBuilding);
+  console.log(langI + " " + capsL);
   // eslint-disable-next-line quotes
-  txt += `<div data-item="${array[i].name}" class="${array[i].class}">${array[i].value[forBuilding]}</div>`;
+  if (forBuilding === 0 || forBuilding == 2) {
+    txt += `<div data-item="${array[i].name}" class="${array[i].class}">${array[i].value[forBuilding]}</div>`;
+    continue;
+  } else {
+    if (forBuilding === 1) {
+      if (i < 15) {
+        txt += `<div data-item="${array[i].name}" class="${array[i].class}">${array[i].value[0]}</div>`;
+      } else {
+        txt += `<div data-item="${array[i].name}" class="${array[i].class}">${array[i].value[forBuilding]}</div>`;
+      }
+      continue;
+    } else if (forBuilding === 3) {
+      if (i < 15) {
+        txt += `<div data-item="${array[i].name}" class="${array[i].class}">${array[i].value[2]}</div>`;
+      } else {
+        txt += `<div data-item="${array[i].name}" class="${array[i].class}">${array[i].value[forBuilding]}</div>`;
+      }
+    }
+  }
 }
 board.insertAdjacentHTML("beforeend", txt);
 
+//  this is for coursor
 for (let i = 0; i < board.childNodes.length; i++) {
   board.childNodes[i].addEventListener("click", function () {
     console.log(this.getAttribute("data-item"));
+    console.log(board.childNodes[i].textContent);
+    if (!this.getAttribute("class", "dark")) {
+      txtarea.value += board.childNodes[i].textContent;
+    }
   });
 }
+``;
 // work with animation
 function show(e) {
   for (let i = 0; i < board.childNodes.length; i++) {
@@ -174,13 +196,9 @@ function show(e) {
 document.addEventListener("keydown", (e) => {
   show(e);
   if (e.code == "ShiftLeft" || e.code == "ShiftRight") {
-    // shift(1);
     !langI ? shift(1) : shift(3);
   }
-  console.log(e.getModifierState("Control"));
-  console.log(e.getModifierState("Alt"));
   if (e.getModifierState("Control") && e.getModifierState("Alt")) {
-    console.log("language");
     !langI ? (langI = true) : (langI = false);
     language();
     console.log(langI);
@@ -189,9 +207,6 @@ document.addEventListener("keydown", (e) => {
 });
 
 document.addEventListener("keyup", (e) => {
-  // переключение языков
-  // капслок
-  console.log(e.code == "CapsLock");
   if (e.code == "CapsLock") {
     !capsL ? (capsL = true) : (capsL = false);
     capsLock();
@@ -201,14 +216,54 @@ document.addEventListener("keyup", (e) => {
     !langI ? shift(0) : shift(2);
   }
 
+  for (let i = 0; i < board.childNodes.length; i++) {
+    if (
+      e.code === "AltLeft" ||
+      e.code === "AltRight" ||
+      e.code === "ControlLeft" ||
+      e.code === "ControlRight" ||
+      e.code === "ShiftLeft" ||
+      e.code === "ShiftRight" ||
+      e.code === "CapsLock" ||
+      e.code === "MetaLeft"
+    ) {
+      continue;
+    }
+    if (board.childNodes[i].getAttribute("data-item") == e.code) {
+      console.log(board.childNodes[i].textContent);
+      if (e.code === "Enter") {
+        let end = "\n";
+        txtarea.value += end;
+        localStorage.setItem("txtArea", txtarea.value);
+        continue;
+      } else if (e.code === "Backspace") {
+        txtarea.value = txtarea.value.slice(0, -1);
+        localStorage.setItem("txtArea", txtarea.value);
+        continue;
+      } else if (e.code === "Tab") {
+        // let tab = "\u0009";
+        // txtarea.focus();
+        let tab = "  ";
+        txtarea.value += tab;
+
+        localStorage.setItem("txtArea", txtarea.value);
+        continue;
+      } else {
+        txtarea.value += board.childNodes[i].textContent;
+        localStorage.setItem("txtArea", txtarea.value);
+      }
+    }
+  }
   console.log(e.code);
-  txtarea.value += e.key;
+  // showTxt(e.code);
+  // txtarea.value += e.key;
 });
 console.log(board.childNodes);
 
 function capsLock() {
   count = 1;
   capsL ? (count = 1) : (count = 0);
+  localStorage.setItem("capsL", capsL);
   if (langI) {
     capsL ? (count = 3) : (count = 2);
   }
@@ -230,6 +285,7 @@ function shift(count) {
 function language() {
   count = 0;
   langI ? (count = 2) : (count = 0);
+  localStorage.setItem("langI", langI);
   for (let i = 0; i < 53; i++) {
     if (i > 0 && i < 15) {
       continue;
@@ -239,3 +295,10 @@ function language() {
 }
 
 // для печатания
+function showTxt(button) {
+  // board.childNodes[i]
+  // for (let i = 0; i < array.length; i++) {
+  //   if (button == array[i]) {
+  //   }
+  // }
+}
