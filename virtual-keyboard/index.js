@@ -245,6 +245,7 @@ document.addEventListener("keyup", (e) => {
         localStorage.setItem("txtArea", txtarea.value);
       }
     }
+    txtarea.blur();
   }
 });
 console.log(board.childNodes);
